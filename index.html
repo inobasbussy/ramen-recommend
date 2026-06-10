@@ -93,12 +93,13 @@
     }
 
     header h1 {
-      font-size: 2.6rem;
+      font-size: clamp(1.4rem, 6vw, 2.6rem);
       font-family: 'Rampart One', sans-serif;
       color: #cc0000;
-      letter-spacing: 0.1em;
-      line-height: 1.2;
+      letter-spacing: 0.06em;
+      line-height: 1.25;
       text-shadow: 4px 4px 0px #7a0000, 2px 2px 0px #ff4444;
+      word-break: keep-all;
     }
 
     header p {
@@ -441,6 +442,55 @@
     @keyframes steam {
       0%, 100% { transform: translateY(0) scaleX(1); opacity: 0.8; }
       50% { transform: translateY(-4px) scaleX(0.9); opacity: 1; }
+    }
+
+    /* ===== スマホ対応 ===== */
+    @media (max-width: 480px) {
+      .banner-slide {
+        font-size: 0.78rem;
+        padding: 8px 10px;
+        line-height: 1.4;
+      }
+
+      header { padding: 16px 12px 12px; }
+
+      header p { font-size: 0.78rem; }
+
+      .weather-bar {
+        flex-direction: column;
+        font-size: 0.75rem;
+        gap: 2px;
+        text-align: center;
+      }
+
+      /* 気分ボタンを2列に */
+      .mood-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .mood-btn { padding: 14px 8px; }
+      .mood-btn .emoji { font-size: 1.6rem; }
+      .mood-btn .label { font-size: 0.78rem; }
+
+      /* 昨日の食事ボタン */
+      .yesterday-btn { font-size: 0.78rem; padding: 10px 6px; }
+
+      /* 量ボタンを2×2に */
+      .amount-row { flex-wrap: wrap; }
+      .amount-btn { min-width: calc(50% - 5px); flex: none; }
+
+      .step h2 { font-size: 0.95rem; }
+
+      .staff-pick { padding: 0 12px; }
+      .staff-pick-card { padding: 12px 14px; gap: 10px; }
+      .staff-pick-name { font-size: 1rem; }
+      .staff-pick-comment { font-size: 0.76rem; }
+
+      .result-card { padding: 18px 14px; }
+      .result-card h3 { font-size: 1.3rem; }
+
+      .cta-btn { font-size: 0.95rem; padding: 14px; }
+      .share-btn { font-size: 0.88rem; padding: 13px; }
     }
   </style>
 </head>
