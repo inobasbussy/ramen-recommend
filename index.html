@@ -498,6 +498,15 @@
       <button class="mood-btn" data-mood="cold">
         <span class="emoji">🥶</span><span class="label">体を<br>温めたい</span>
       </button>
+      <button class="mood-btn" data-mood="nomeeting">
+        <span class="emoji">🧄</span><span class="label">今日はもう<br>誰とも会わない</span>
+      </button>
+      <button class="mood-btn" data-mood="yolo">
+        <span class="emoji">💀</span><span class="label">明日どうなっても<br>いい</span>
+      </button>
+      <button class="mood-btn" data-mood="date">
+        <span class="emoji">💕</span><span class="label">これから<br>デート</span>
+      </button>
     </div>
   </div>
 
@@ -727,12 +736,15 @@
     Object.keys(STAFF_PICK.boost).forEach(k => { s[k] += STAFF_PICK.boost[k]; });
 
     // Mood
-    if (mood==='tired')     { s.tonkotsu+=3; s.miso+=3; s.shoyu+=2; s.tantanmen+=1; }
-    if (mood==='energetic') { s.tsukemen+=3; s.abura+=3; s.tonkotsu+=2; }
-    if (mood==='hot')       { s.spicy+=4; s.tantanmen+=3; }
-    if (mood==='light')     { s.shio+=4; s.shoyu+=2; }
-    if (mood==='rich')      { s.tonkotsu+=3; s.tsukemen+=2; s.abura+=2; s.tantanmen+=1; }
-    if (mood==='cold')      { s.miso+=3; s.tantanmen+=3; s.tonkotsu+=2; }
+    if (mood==='tired')      { s.tonkotsu+=3; s.miso+=3; s.shoyu+=2; s.tantanmen+=1; }
+    if (mood==='energetic')  { s.tsukemen+=3; s.abura+=3; s.tonkotsu+=2; }
+    if (mood==='hot')        { s.spicy+=4; s.tantanmen+=3; }
+    if (mood==='light')      { s.shio+=4; s.shoyu+=2; }
+    if (mood==='rich')       { s.tonkotsu+=3; s.tsukemen+=2; s.abura+=2; s.tantanmen+=1; }
+    if (mood==='cold')       { s.miso+=3; s.tantanmen+=3; s.tonkotsu+=2; }
+    if (mood==='nomeeting')  { s.tonkotsu+=3; s.miso+=2; s.spicy+=2; s.abura+=2; }
+    if (mood==='yolo')       { s.tonkotsu+=4; s.spicy+=3; s.abura+=3; s.tsukemen+=2; }
+    if (mood==='date')       { s.shio+=5; s.shoyu+=3; }
 
     // Yesterday
     if (food==='ramen')   { s.shio+=2; s.shoyu+=2; s.miso-=1; s.tonkotsu-=1; }
@@ -763,7 +775,7 @@
   }
 
   function buildReason(mood, food, ramen) {
-    const moodMap = { tired:'疲れているとき', energetic:'元気いっぱいのとき', hot:'辛いものが食べたいとき', light:'あっさりしたいとき', rich:'こってりが食べたいとき', cold:'体を温めたいとき' };
+    const moodMap = { tired:'疲れているとき', energetic:'元気いっぱいのとき', hot:'辛いものが食べたいとき', light:'あっさりしたいとき', rich:'こってりが食べたいとき', cold:'体を温めたいとき', nomeeting:'今日はもう誰とも会わないとき', yolo:'明日どうなってもいいとき', date:'これからデートのとき' };
     const foodMap = { ramen:'昨日麺類を食べた', meat:'昨日肉料理を食べた', rice:'昨日和食だった', light:'昨日あっさりしたものを食べた', junk:'昨日ジャンクフードを食べた', alcohol:'昨日お酒を飲んだ', nothing:'昨日あまり食べなかった', custom:`昨日「${customFood}」を食べた`, other:'昨日その他のものを食べた' };
     const comments = {
       tonkotsu: 'コクのある豚骨スープが疲れた体に染み渡ります。濃厚な旨味でエネルギーチャージ！',
@@ -775,7 +787,13 @@
       abura:    'スープなしで麺に直接タレが絡む濃厚な旨味。酢をかけると味変で2度美味しい！',
       tantanmen:'胡麻の香りと辛味が調和した担々麺。体を内側から温め、元気が出ます。',
     };
-    return `${moodMap[mood] || ''}・${foodMap[food] || ''}ことを考えると、今日は「${ramenDB[ramen].name}」がベストな選択です！\n\n${comments[ramen]}`;
+    const specialMsg = {
+      nomeeting: '今日は誰とも会わないので、ニンニク解禁です🧄 遠慮なく増しちゃいましょう！',
+      yolo:      '明日どうなってもいい…その覚悟、受け止めました。ニンニク増し増し・全力トッピングでいきましょう💀🧄',
+      date:      '…💕 デートですね。ニンニクは厳禁です。あっさり系で爽やかに決めてください。くれぐれもニンニクは頼まないように！',
+    };
+    const special = specialMsg[mood] ? `\n\n${specialMsg[mood]}` : '';
+    return `${moodMap[mood] || ''}・${foodMap[food] || ''}ことを考えると、今日は「${ramenDB[ramen].name}」がベストな選択です！\n\n${comments[ramen]}${special}`;
   }
 
   function recommend() {
@@ -790,7 +808,27 @@
 
     const toppingEl = document.getElementById('resToppings');
     toppingEl.innerHTML = '';
-    data.toppings.forEach(t => {
+
+    // ニンニク系気分は先頭にニンニクトッピングを強制追加
+    let toppings = [...data.toppings];
+    if (selectedMood === 'nomeeting') {
+      toppings = [{ name: '🧄 ニンニク増し', highlight: true }, ...toppings];
+    } else if (selectedMood === 'yolo') {
+      toppings = [
+        { name: '🧄 ニンニク増し増し', highlight: true },
+        { name: '🌶️ 辛さ増し', highlight: true },
+        { name: '🥩 チャーシュー増量', highlight: true },
+        ...toppings.slice(0, 2),
+      ];
+    } else if (selectedMood === 'date') {
+      toppings = [
+        { name: 'ニンニクなし', highlight: true },
+        { name: '口臭ケア済み', highlight: false },
+        ...toppings.filter(t => t.name !== 'ニンニク'),
+      ];
+    }
+
+    toppings.forEach(t => {
       const chip = document.createElement('span');
       chip.className = 'topping-chip' + (t.highlight ? ' highlight' : '');
       chip.textContent = t.name;
