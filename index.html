@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>今日のラーメン、何にする？</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
+      background: #1a0a00;
+      color: #f5e6d0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      padding: 24px 16px 16px;
+      text-align: center;
+      background: linear-gradient(180deg, #3d1a00 0%, #1a0a00 100%);
+      border-bottom: 2px solid #c0440a;
+    }
+
+    header h1 {
+      font-size: 1.6rem;
+      color: #ff9944;
+      letter-spacing: 0.05em;
+    }
+
+    header p {
+      margin-top: 6px;
+      font-size: 0.85rem;
+      color: #c8a880;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      padding: 24px 16px 48px;
+    }
+
+    .step {
+      margin-bottom: 32px;
+    }
+
+    .step-label {
+      font-size: 0.72rem;
+      letter-spacing: 0.12em;
+      color: #c0440a;
+      text-transform: uppercase;
+      margin-bottom: 8px;
+    }
+
+    .step h2 {
+      font-size: 1.05rem;
+      color: #ffd4a0;
+      margin-bottom: 14px;
+    }
+
+    /* Mood grid */
+    .mood-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .mood-btn {
+      background: #2a1000;
+      border: 1.5px solid #5a2800;
+      border-radius: 12px;
+      padding: 12px 6px;
+      cursor: pointer;
+      text-align: center;
+      transition: all 0.15s;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mood-btn:hover { border-color: #ff7722; background: #3a1800; }
+
+    .mood-btn.selected {
+      border-color: #ff7722;
+      background: #4a2000;
+      box-shadow: 0 0 12px #ff772244;
+    }
+
+    .mood-btn .emoji { font-size: 1.8rem; }
+    .mood-btn .label { font-size: 0.8rem; color: #d4a870; line-height: 1.2; }
+
+    /* Yesterday input */
+    .yesterday-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .yesterday-btn {
+      background: #2a1000;
+      border: 1.5px solid #5a2800;
+      border-radius: 10px;
+      padding: 10px 8px;
+      cursor: pointer;
+      font-size: 0.82rem;
+      color: #d4a870;
+      text-align: center;
+      transition: all 0.15s;
+    }
+
+    .yesterday-btn:hover { border-color: #ff7722; background: #3a1800; }
+
+    .yesterday-btn.selected {
+      border-color: #ff7722;
+      background: #4a2000;
+    }
+
+    .or-divider {
+      text-align: center;
+      font-size: 0.72rem;
+      color: #806040;
+      margin: 10px 0;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      background: #2a1000;
+      border: 1.5px solid #5a2800;
+      border-radius: 10px;
+      padding: 12px 14px;
+      color: #f5e6d0;
+      font-size: 0.9rem;
+      outline: none;
+      transition: border-color 0.15s;
+    }
+
+    input[type="text"]:focus { border-color: #ff7722; }
+    input[type="text"]::placeholder { color: #6a4830; }
+
+    /* Amount */
+    .amount-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .amount-btn {
+      flex: 1;
+      background: #2a1000;
+      border: 1.5px solid #5a2800;
+      border-radius: 10px;
+      padding: 11px 6px;
+      cursor: pointer;
+      text-align: center;
+      font-size: 0.82rem;
+      color: #d4a870;
+      transition: all 0.15s;
+    }
+
+    .amount-btn:hover { border-color: #ff7722; background: #3a1800; }
+
+    .amount-btn.selected {
+      border-color: #ff7722;
+      background: #4a2000;
+    }
+
+    /* CTA */
+    .cta-btn {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #c0440a, #ff7722);
+      border: none;
+      border-radius: 14px;
+      color: #fff;
+      font-size: 1.05rem;
+      font-weight: bold;
+      cursor: pointer;
+      letter-spacing: 0.08em;
+      transition: opacity 0.15s, transform 0.1s;
+      margin-top: 8px;
+    }
+
+    .cta-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .cta-btn:active { transform: translateY(0); }
+    .cta-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
+
+    /* Result card */
+    #result {
+      display: none;
+      margin-top: 32px;
+    }
+
+    .result-card {
+      background: linear-gradient(160deg, #3a1a00, #2a0e00);
+      border: 2px solid #c0440a;
+      border-radius: 18px;
+      padding: 24px 20px;
+      box-shadow: 0 4px 32px #c0440a33;
+    }
+
+    .result-card .tag {
+      display: inline-block;
+      background: #c0440a;
+      color: #fff;
+      font-size: 0.68rem;
+      font-weight: bold;
+      letter-spacing: 0.1em;
+      padding: 3px 10px;
+      border-radius: 20px;
+      margin-bottom: 12px;
+    }
+
+    .result-card h3 {
+      font-size: 1.6rem;
+      color: #ff9944;
+      margin-bottom: 4px;
+    }
+
+    .result-card .subtitle {
+      font-size: 0.82rem;
+      color: #c8a070;
+      margin-bottom: 20px;
+    }
+
+    .result-section {
+      margin-bottom: 16px;
+    }
+
+    .result-section .section-title {
+      font-size: 0.72rem;
+      color: #c0440a;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 6px;
+    }
+
+    .topping-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+
+    .topping-chip {
+      background: #4a1e00;
+      border: 1px solid #7a3010;
+      border-radius: 20px;
+      padding: 4px 12px;
+      font-size: 0.82rem;
+      color: #ffd4a0;
+    }
+
+    .topping-chip.highlight {
+      background: #7a2800;
+      border-color: #ff7722;
+      color: #ff9944;
+    }
+
+    .amount-badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: #4a1e00;
+      border: 1px solid #7a3010;
+      border-radius: 20px;
+      padding: 4px 14px;
+      font-size: 0.85rem;
+      color: #ffd4a0;
+    }
+
+    .reason-box {
+      background: #1e0c00;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.82rem;
+      color: #c8a070;
+      line-height: 1.65;
+      margin-top: 16px;
+    }
+
+    .retry-btn {
+      width: 100%;
+      margin-top: 18px;
+      padding: 12px;
+      background: transparent;
+      border: 1.5px solid #5a2800;
+      border-radius: 12px;
+      color: #c8a070;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: border-color 0.15s, color 0.15s;
+    }
+
+    .retry-btn:hover { border-color: #ff7722; color: #ffd4a0; }
+
+    .steam {
+      display: inline-block;
+      animation: steam 2s ease-in-out infinite;
+    }
+
+    @keyframes steam {
+      0%, 100% { transform: translateY(0) scaleX(1); opacity: 0.8; }
+      50% { transform: translateY(-4px) scaleX(0.9); opacity: 1; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <h1><span class="steam">🍜</span> 今日のラーメン、何にする？</h1>
+  <p>今日の気分と昨日の食事からベストな一杯をおすすめします</p>
+</header>
+
+<div class="container">
+
+  <!-- Step 1: 今日の気分 -->
+  <div class="step">
+    <div class="step-label">Step 1</div>
+    <h2>今日の気分は？</h2>
+    <div class="mood-grid" id="moodGrid">
+      <button class="mood-btn" data-mood="tired">
+        <span class="emoji">😩</span>
+        <span class="label">疲れた・<br>癒されたい</span>
+      </button>
+      <button class="mood-btn" data-mood="energetic">
+        <span class="emoji">💪</span>
+        <span class="label">元気いっぱい・<br>がっつり食べたい</span>
+      </button>
+      <button class="mood-btn" data-mood="hot">
+        <span class="emoji">🔥</span>
+        <span class="label">辛いもの<br>が食べたい</span>
+      </button>
+      <button class="mood-btn" data-mood="light">
+        <span class="emoji">🌿</span>
+        <span class="label">あっさり<br>したい</span>
+      </button>
+      <button class="mood-btn" data-mood="rich">
+        <span class="emoji">😋</span>
+        <span class="label">濃厚・<br>こってりが好き</span>
+      </button>
+      <button class="mood-btn" data-mood="cold">
+        <span class="emoji">🥶</span>
+        <span class="label">体を<br>温めたい</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Step 2: 昨日食べたもの -->
+  <div class="step">
+    <div class="step-label">Step 2</div>
+    <h2>昨日の夜は何を食べましたか？</h2>
+    <div class="yesterday-grid" id="yesterdayGrid">
+      <button class="yesterday-btn" data-food="ramen">🍜 ラーメン・麺類</button>
+      <button class="yesterday-btn" data-food="meat">🥩 肉料理（焼肉・ステーキ）</button>
+      <button class="yesterday-btn" data-food="rice">🍚 和食・ご飯もの</button>
+      <button class="yesterday-btn" data-food="light">🥗 サラダ・軽めのもの</button>
+      <button class="yesterday-btn" data-food="junk">🍔 ファストフード・ジャンク</button>
+      <button class="yesterday-btn" data-food="alcohol">🍺 お酒・つまみ中心</button>
+      <button class="yesterday-btn" data-food="nothing">😴 食べなかった</button>
+      <button class="yesterday-btn" data-food="other">🍽️ その他</button>
+    </div>
+    <div class="or-divider">または自由に入力</div>
+    <input type="text" id="yesterdayInput" placeholder="例：カレーライス、餃子、お寿司…">
+  </div>
+
+  <!-- Step 3: 食べる量 -->
+  <div class="step">
+    <div class="step-label">Step 3</div>
+    <h2>今日はどのくらい食べたいですか？</h2>
+    <div class="amount-row" id="amountRow">
+      <button class="amount-btn" data-amount="small">🥢 少なめ</button>
+      <button class="amount-btn" data-amount="normal">🍜 普通</button>
+      <button class="amount-btn" data-amount="large">💪 大盛り</button>
+      <button class="amount-btn" data-amount="extra">🔥 特盛・おかわり</button>
+    </div>
+  </div>
+
+  <button class="cta-btn" id="recommendBtn" disabled onclick="recommend()">
+    おすすめを見る 🍜
+  </button>
+
+  <!-- Result -->
+  <div id="result">
+    <div class="result-card" id="resultCard">
+      <span class="tag">TODAY'S RECOMMENDATION</span>
+      <h3 id="resRamen">—</h3>
+      <div class="subtitle" id="resSubtitle">—</div>
+
+      <div class="result-section">
+        <div class="section-title">おすすめトッピング</div>
+        <div class="topping-list" id="resToppings"></div>
+      </div>
+
+      <div class="result-section">
+        <div class="section-title">量・オプション</div>
+        <div class="amount-badge" id="resAmount">—</div>
+      </div>
+
+      <div class="reason-box" id="resReason">—</div>
+    </div>
+
+    <button class="retry-btn" onclick="reset()">↩ もう一度選び直す</button>
+  </div>
+
+</div>
+
+<script>
+  let selectedMood = null;
+  let selectedFood = null;
+  let selectedAmount = null;
+  let customFood = '';
+
+  // --- Selection handlers ---
+
+  document.getElementById('moodGrid').addEventListener('click', e => {
+    const btn = e.target.closest('.mood-btn');
+    if (!btn) return;
+    document.querySelectorAll('.mood-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedMood = btn.dataset.mood;
+    checkReady();
+  });
+
+  document.getElementById('yesterdayGrid').addEventListener('click', e => {
+    const btn = e.target.closest('.yesterday-btn');
+    if (!btn) return;
+    document.querySelectorAll('.yesterday-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedFood = btn.dataset.food;
+    document.getElementById('yesterdayInput').value = '';
+    customFood = '';
+    checkReady();
+  });
+
+  document.getElementById('yesterdayInput').addEventListener('input', e => {
+    customFood = e.target.value.trim();
+    if (customFood) {
+      document.querySelectorAll('.yesterday-btn').forEach(b => b.classList.remove('selected'));
+      selectedFood = 'custom';
+    } else {
+      selectedFood = null;
+    }
+    checkReady();
+  });
+
+  document.getElementById('amountRow').addEventListener('click', e => {
+    const btn = e.target.closest('.amount-btn');
+    if (!btn) return;
+    document.querySelectorAll('.amount-btn').forEach(b => b.classList.remove('selected'));
+    btn.classList.add('selected');
+    selectedAmount = btn.dataset.amount;
+    checkReady();
+  });
+
+  function checkReady() {
+    const ready = selectedMood && (selectedFood || customFood) && selectedAmount;
+    document.getElementById('recommendBtn').disabled = !ready;
+  }
+
+  // --- Recommendation engine ---
+
+  const RAMEN = {
+    // [mood][food_category] => ramen key
+    // Resolved via scoring
+  };
+
+  const ramenDB = {
+    tonkotsu: {
+      name: '豚骨ラーメン',
+      subtitle: '濃厚クリーミーなスープで心も体も満たされる一杯',
+      toppings: [
+        { name: 'チャーシュー', highlight: true },
+        { name: '半熟卵', highlight: true },
+        { name: 'きくらげ' },
+        { name: 'ネギ' },
+        { name: '紅しょうが' },
+        { name: 'のり' },
+      ],
+    },
+    shoyu: {
+      name: '醤油ラーメン',
+      subtitle: 'キレのあるタレと清澄なスープ、懐かしい味わい',
+      toppings: [
+        { name: 'チャーシュー', highlight: true },
+        { name: '半熟卵', highlight: true },
+        { name: 'メンマ' },
+        { name: 'ネギ' },
+        { name: 'のり' },
+        { name: 'なると' },
+      ],
+    },
+    shio: {
+      name: '塩ラーメン',
+      subtitle: '透き通った黄金スープ、素材の旨味が際立つ上品な一杯',
+      toppings: [
+        { name: '柚子皮', highlight: true },
+        { name: '蒸し鶏チャーシュー', highlight: true },
+        { name: '三つ葉' },
+        { name: 'メンマ' },
+        { name: 'ねぎ' },
+      ],
+    },
+    miso: {
+      name: '味噌ラーメン',
+      subtitle: '深みのある味噌の香りとコク、寒い日にも体が喜ぶ',
+      toppings: [
+        { name: 'バター', highlight: true },
+        { name: 'コーン', highlight: true },
+        { name: '炒め野菜' },
+        { name: '半熟卵' },
+        { name: '豚バラチャーシュー' },
+        { name: 'ネギ' },
+      ],
+    },
+    spicy: {
+      name: '辛味噌ラーメン',
+      subtitle: '旨辛スープが体の芯から熱くする、クセになる刺激',
+      toppings: [
+        { name: '辛子味噌追加', highlight: true },
+        { name: 'ニンニク', highlight: true },
+        { name: '粗挽き唐辛子' },
+        { name: '炒め野菜' },
+        { name: '半熟卵' },
+        { name: 'チャーシュー' },
+      ],
+    },
+    tsukemen: {
+      name: 'つけ麺',
+      subtitle: '濃厚なつけ汁に極太麺をどっぷり、食べ応え抜群',
+      toppings: [
+        { name: '麺大盛り', highlight: true },
+        { name: 'チャーシュー', highlight: true },
+        { name: '半熟卵' },
+        { name: 'メンマ' },
+        { name: '刻みネギ' },
+      ],
+    },
+    abura: {
+      name: '油そば / まぜそば',
+      subtitle: 'スープなし・タレと油で和えた濃厚な一杯、最後に酢を！',
+      toppings: [
+        { name: '卵黄', highlight: true },
+        { name: 'ニンニク', highlight: true },
+        { name: 'マヨネーズ' },
+        { name: '刻みネギ' },
+        { name: 'チャーシュー' },
+      ],
+    },
+    tantanmen: {
+      name: '担々麺',
+      subtitle: 'ゴマの香りと旨辛スープ、体を内側から温める一杯',
+      toppings: [
+        { name: '追いゴマ', highlight: true },
+        { name: '花椒', highlight: true },
+        { name: '挽き肉増量' },
+        { name: '半熟卵' },
+        { name: '青梗菜' },
+      ],
+    },
+  };
+
+  // Scoring matrix: [mood][food] => ramen score map
+  function score(mood, food, amount) {
+    const s = {
+      tonkotsu: 0, shoyu: 0, shio: 0, miso: 0,
+      spicy: 0, tsukemen: 0, abura: 0, tantanmen: 0,
+    };
+
+    // Mood influence
+    if (mood === 'tired')     { s.tonkotsu += 3; s.miso += 3; s.shoyu += 2; s.tantanmen += 1; }
+    if (mood === 'energetic') { s.tsukemen += 3; s.abura += 3; s.tonkotsu += 2; }
+    if (mood === 'hot')       { s.spicy += 4; s.tantanmen += 3; }
+    if (mood === 'light')     { s.shio += 4; s.shoyu += 2; }
+    if (mood === 'rich')      { s.tonkotsu += 3; s.tsukemen += 2; s.abura += 2; s.tantanmen += 1; }
+    if (mood === 'cold')      { s.miso += 3; s.tantanmen += 3; s.tonkotsu += 2; }
+
+    // Yesterday's food influence (balance principle)
+    if (food === 'ramen')    { s.shio += 2; s.shoyu += 2; s.miso -= 1; s.tonkotsu -= 1; } // same genre, lighter pick
+    if (food === 'meat')     { s.shio += 2; s.shoyu += 2; s.miso += 1; } // had rich protein → lighter soup
+    if (food === 'rice')     { s.tonkotsu += 2; s.tsukemen += 2; s.spicy += 1; } // light yesterday → rich today
+    if (food === 'light')    { s.tonkotsu += 3; s.tsukemen += 2; s.abura += 2; } // light yesterday → indulge today
+    if (food === 'junk')     { s.shio += 3; s.shoyu += 2; s.miso += 1; } // junk yesterday → clean today
+    if (food === 'alcohol')  { s.shio += 3; s.shoyu += 2; s.tonkotsu -= 1; } // stomach sensitive
+    if (food === 'nothing')  { s.tsukemen += 3; s.abura += 2; s.tonkotsu += 2; } // hungry → big meal
+    if (food === 'custom')   { /* neutral */ }
+
+    // Amount influence
+    if (amount === 'small')  { s.shio += 2; s.shoyu += 1; s.tsukemen -= 2; s.abura -= 1; }
+    if (amount === 'large' || amount === 'extra') {
+      s.tsukemen += 3; s.abura += 2; s.tonkotsu += 1;
+    }
+
+    return s;
+  }
+
+  function pickBest(scores) {
+    return Object.entries(scores).sort((a, b) => b[1] - a[1])[0][0];
+  }
+
+  function amountText(ramen, amount) {
+    if (amount === 'small')  return '🥢 麺少なめ（またはハーフサイズ）';
+    if (amount === 'normal') return '🍜 普通盛り';
+    if (amount === 'large')  return '💪 大盛り';
+    if (amount === 'extra') {
+      if (ramen === 'tsukemen' || ramen === 'abura') return '🔥 特盛り + 替え玉';
+      return '🔥 特盛り + 替え玉（または丼ライス）';
+    }
+    return '';
+  }
+
+  function buildReason(mood, food, foodLabel, ramen) {
+    const moodMap = {
+      tired: '疲れているとき', energetic: '元気いっぱいのとき',
+      hot: '辛いものが食べたいとき', light: 'あっさりしたいとき',
+      rich: 'こってりが食べたいとき', cold: '体を温めたいとき',
+    };
+    const foodMap = {
+      ramen: '昨日麺類を食べた', meat: '昨日肉料理を食べた',
+      rice: '昨日和食だった', light: '昨日あっさりしたものを食べた',
+      junk: '昨日ジャンクフードを食べた', alcohol: '昨日お酒を飲んだ',
+      nothing: '昨日あまり食べなかった', custom: `昨日「${customFood}」を食べた`,
+      other: '昨日その他のものを食べた',
+    };
+
+    const moodText = moodMap[mood] || '';
+    const foodText = foodMap[food] || '';
+    const ramenName = ramenDB[ramen].name;
+
+    const comments = {
+      tonkotsu: 'コクのある豚骨スープが疲れた体に染み渡ります。濃厚な旨味でエネルギーチャージ！',
+      shoyu: '醤油のキレあるスープでスッキリと。胃にも優しく、気分をリセットしてくれます。',
+      shio: '透明感のある塩スープが素材の旨味を引き立て、体に負担をかけません。',
+      miso: '味噌の深いコクと香りが体の芯から温めてくれます。野菜との相性も抜群。',
+      spicy: '旨辛スープで汗をかいてスッキリ！刺激が気分を高揚させてくれます。',
+      tsukemen: '濃厚なつけ汁に極太麺を絡めてガッツリ。食べ応え満点の一杯です。',
+      abura: 'スープなしで麺に直接タレが絡む濃厚な旨味。酢をかけると味変で2度美味しい！',
+      tantanmen: '胡麻の香りと辛味が調和した担々麺。体を内側から温め、元気が出ます。',
+    };
+
+    return `${moodText}・${foodText}ことを考えると、今日は「${ramenName}」がベストな選択です！\n\n${comments[ramen]}`;
+  }
+
+  function recommend() {
+    const food = selectedFood || 'custom';
+    const scores = score(selectedMood, food, selectedAmount);
+    const best = pickBest(scores);
+    const data = ramenDB[best];
+
+    document.getElementById('resRamen').textContent = data.name;
+    document.getElementById('resSubtitle').textContent = data.subtitle;
+
+    const toppingEl = document.getElementById('resToppings');
+    toppingEl.innerHTML = '';
+    data.toppings.forEach(t => {
+      const chip = document.createElement('span');
+      chip.className = 'topping-chip' + (t.highlight ? ' highlight' : '');
+      chip.textContent = t.name;
+      toppingEl.appendChild(chip);
+    });
+
+    document.getElementById('resAmount').textContent = amountText(best, selectedAmount);
+
+    const foodLabel = document.querySelector('.yesterday-btn.selected')?.textContent || customFood;
+    document.getElementById('resReason').textContent = buildReason(selectedMood, food, foodLabel, best);
+
+    document.getElementById('result').style.display = 'block';
+    document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  function reset() {
+    selectedMood = null; selectedFood = null; selectedAmount = null; customFood = '';
+    document.querySelectorAll('.mood-btn, .yesterday-btn, .amount-btn').forEach(b => b.classList.remove('selected'));
+    document.getElementById('yesterdayInput').value = '';
+    document.getElementById('recommendBtn').disabled = true;
+    document.getElementById('result').style.display = 'none';
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
