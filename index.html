@@ -415,6 +415,19 @@
 
     .retry-btn:hover { background: #fff0aa; border-color: #aa0000; }
 
+    .allergy-notice {
+      background: #fff8cc;
+      border: 2px solid #cc0000;
+      border-left: 6px solid #cc0000;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-size: 0.82rem;
+      color: #000;
+      font-weight: bold;
+      margin-top: 16px;
+      line-height: 1.6;
+    }
+
     .share-btn {
       width: 100%;
       margin-top: 12px;
@@ -567,6 +580,9 @@
       <button class="mood-btn" data-mood="cold">
         <span class="emoji">🥶</span><span class="label">体を<br>温めたい</span>
       </button>
+      <button class="mood-btn" data-mood="happy">
+        <span class="emoji">🎉</span><span class="label">いいことがあった<br>のでハッピー</span>
+      </button>
       <button class="mood-btn" data-mood="nomeeting">
         <span class="emoji">🧄</span><span class="label">今日はもう<br>誰とも会わない</span>
       </button>
@@ -636,6 +652,10 @@
       <span class="x-logo">𝕏</span> 食べたラーメンをポストする
     </button>
     <div class="share-hint">ポストするとトッピング1品無料キャンペーン対象！</div>
+
+    <div class="allergy-notice">
+      ⚠️ アレルギーをお持ちの方は、ご注文前に今一度ご確認のもとご注文頂きますようお願いいたします。
+    </div>
 
     <button class="retry-btn" onclick="reset()">↩ もう一度選び直す</button>
   </div>
@@ -813,6 +833,7 @@
     if (mood==='light')      { s.shio+=4; s.shoyu+=2; }
     if (mood==='rich')       { s.tonkotsu+=3; s.tsukemen+=2; s.abura+=2; s.tantanmen+=1; }
     if (mood==='cold')       { s.miso+=3; s.tantanmen+=3; s.tonkotsu+=2; }
+    if (mood==='happy')      { s.tsukemen+=3; s.tonkotsu+=3; s.spicy+=2; s.tantanmen+=2; }
     if (mood==='nomeeting')  { s.tonkotsu+=3; s.miso+=2; s.spicy+=2; s.abura+=2; }
     if (mood==='yolo')       { s.tonkotsu+=4; s.spicy+=3; s.abura+=3; s.tsukemen+=2; }
     if (mood==='date')       { s.shio+=5; s.shoyu+=3; }
@@ -848,7 +869,7 @@
   }
 
   function buildReason(mood, food, ramen) {
-    const moodMap = { tired:'疲れているとき', energetic:'元気いっぱいのとき', hot:'辛いものが食べたいとき', light:'あっさりしたいとき', rich:'こってりが食べたいとき', cold:'体を温めたいとき', nomeeting:'今日はもう誰とも会わないとき', yolo:'明日どうなってもいいとき', date:'これからデートのとき' };
+    const moodMap = { tired:'疲れているとき', energetic:'元気いっぱいのとき', hot:'辛いものが食べたいとき', light:'あっさりしたいとき', rich:'こってりが食べたいとき', cold:'体を温めたいとき', happy:'いいことがあってハッピーなとき', nomeeting:'今日はもう誰とも会わないとき', yolo:'明日どうなってもいいとき', date:'これからデートのとき' };
     const foodMap = { ramen:'昨日麺類を食べた', meat:'昨日肉料理を食べた', rice:'昨日和食だった', light:'昨日あっさりしたものを食べた', junk:'昨日ジャンクフードを食べた', alcohol:'昨日お酒を飲んだ', nothing:'昨日あまり食べなかった', custom:`昨日「${customFood}」を食べた`, other:'昨日その他のものを食べた', '笑福':'昨夜も笑福に来てくれた', forget:'昨日何を食べたか覚えていない' };
     const comments = {
       tonkotsu: 'コクのある豚骨スープが疲れた体に染み渡ります。濃厚な旨味でエネルギーチャージ！',
@@ -861,6 +882,7 @@
       tantanmen:'胡麻の香りと辛味が調和した担々麺。体を内側から温め、元気が出ます。',
     };
     const specialMsg = {
+      happy:     'いいことがあった日は、ご褒美ラーメンでシメましょう🎉 今日は奮発してトッピング全部のせも全然アリです！',
       nomeeting: '今日は誰とも会わないので、ニンニク解禁です🧄 遠慮なく増しちゃいましょう！',
       yolo:      '明日どうなってもいい…その覚悟、受け止めました。ニンニク増し増し・全力トッピングでいきましょう💀🧄',
       date:      '…💕 デートですね。ニンニクは厳禁です。あっさり系で爽やかに決めてください。くれぐれもニンニクは頼まないように！',
