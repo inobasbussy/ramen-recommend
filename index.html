@@ -591,6 +591,8 @@
       <button class="yesterday-btn" data-food="alcohol">🍺 お酒・つまみ中心</button>
       <button class="yesterday-btn" data-food="nothing">😴 食べなかった</button>
       <button class="yesterday-btn" data-food="other">🍽️ その他</button>
+      <button class="yesterday-btn" data-food="笑福">🏮 昨夜も笑福</button>
+      <button class="yesterday-btn" data-food="forget">🌀 覚えていない</button>
     </div>
     <div class="or-divider">または自由に入力</div>
     <input type="text" id="yesterdayInput" placeholder="例：カレーライス、餃子、お寿司…">
@@ -823,6 +825,8 @@
     if (food==='junk')    { s.shio+=3; s.shoyu+=2; s.miso+=1; }
     if (food==='alcohol') { s.shio+=3; s.shoyu+=2; s.tonkotsu-=1; }
     if (food==='nothing') { s.tsukemen+=3; s.abura+=2; s.tonkotsu+=2; }
+    if (food==='笑福')    { s.spicy+=3; s.abura+=3; s.tsukemen+=2; s.tantanmen+=2; }
+    if (food==='forget')  { s.tonkotsu+=2; s.miso+=2; s.shio+=2; s.shoyu+=2; }
 
     // Amount
     if (amount==='small') { s.shio+=2; s.shoyu+=1; s.tsukemen-=2; s.abura-=1; }
@@ -845,7 +849,7 @@
 
   function buildReason(mood, food, ramen) {
     const moodMap = { tired:'疲れているとき', energetic:'元気いっぱいのとき', hot:'辛いものが食べたいとき', light:'あっさりしたいとき', rich:'こってりが食べたいとき', cold:'体を温めたいとき', nomeeting:'今日はもう誰とも会わないとき', yolo:'明日どうなってもいいとき', date:'これからデートのとき' };
-    const foodMap = { ramen:'昨日麺類を食べた', meat:'昨日肉料理を食べた', rice:'昨日和食だった', light:'昨日あっさりしたものを食べた', junk:'昨日ジャンクフードを食べた', alcohol:'昨日お酒を飲んだ', nothing:'昨日あまり食べなかった', custom:`昨日「${customFood}」を食べた`, other:'昨日その他のものを食べた' };
+    const foodMap = { ramen:'昨日麺類を食べた', meat:'昨日肉料理を食べた', rice:'昨日和食だった', light:'昨日あっさりしたものを食べた', junk:'昨日ジャンクフードを食べた', alcohol:'昨日お酒を飲んだ', nothing:'昨日あまり食べなかった', custom:`昨日「${customFood}」を食べた`, other:'昨日その他のものを食べた', '笑福':'昨夜も笑福に来てくれた', forget:'昨日何を食べたか覚えていない' };
     const comments = {
       tonkotsu: 'コクのある豚骨スープが疲れた体に染み渡ります。濃厚な旨味でエネルギーチャージ！',
       shoyu:    '醤油のキレあるスープでスッキリと。胃にも優しく、気分をリセットしてくれます。',
@@ -861,8 +865,13 @@
       yolo:      '明日どうなってもいい…その覚悟、受け止めました。ニンニク増し増し・全力トッピングでいきましょう💀🧄',
       date:      '…💕 デートですね。ニンニクは厳禁です。あっさり系で爽やかに決めてください。くれぐれもニンニクは頼まないように！',
     };
+    const foodSpecialMsg = {
+      '笑福': '昨日に引き続きのご来店、本当にありがとうございます！🏮\n毎日来てくれるあなたに、今日はいつもと違うチャレンジメニューをご提案します。ぜひ冒険してみてください！',
+      forget:  '昨日何を食べたか覚えていない…それはきっと運命です🌀\nお腹の声に従って、今日は直感でいきましょう！',
+    };
     const special = specialMsg[mood] ? `\n\n${specialMsg[mood]}` : '';
-    return `${moodMap[mood] || ''}・${foodMap[food] || ''}ことを考えると、今日は「${ramenDB[ramen].name}」がベストな選択です！\n\n${comments[ramen]}${special}`;
+    const foodSpecial = foodSpecialMsg[food] ? `\n\n${foodSpecialMsg[food]}` : '';
+    return `${moodMap[mood] || ''}・${foodMap[food] || ''}ことを考えると、今日は「${ramenDB[ramen].name}」がベストな選択です！\n\n${comments[ramen]}${special}${foodSpecial}`;
   }
 
   function recommend() {
@@ -888,6 +897,14 @@
         { name: '🌶️ 辛さ増し', highlight: true },
         { name: '🥩 チャーシュー増量', highlight: true },
         ...toppings.slice(0, 2),
+      ];
+    } else if (food === '笑福') {
+      toppings = [
+        { name: '🔥 背脂増し', highlight: true },
+        { name: '🧄 ニンニクペースト', highlight: true },
+        { name: '🌶️ 激辛トッピング', highlight: true },
+        { name: '🥚 温泉卵追加', highlight: false },
+        { name: '🧀 チーズトッピング', highlight: false },
       ];
     } else if (selectedMood === 'date') {
       toppings = [
