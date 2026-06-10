@@ -398,6 +398,41 @@
 
     .retry-btn:hover { background: #fff0aa; border-color: #aa0000; }
 
+    .share-btn {
+      width: 100%;
+      margin-top: 12px;
+      padding: 14px;
+      background: #000;
+      border: none;
+      border-radius: 12px;
+      color: #fff;
+      font-size: 0.95rem;
+      font-weight: bold;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      letter-spacing: 0.05em;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .share-btn:hover { background: #222; transform: translateY(-1px); }
+    .share-btn:active { transform: translateY(0); }
+
+    .share-btn .x-logo {
+      font-size: 1.1rem;
+      font-weight: 900;
+      font-family: serif;
+    }
+
+    .share-hint {
+      text-align: center;
+      font-size: 0.72rem;
+      color: #a06020;
+      margin-top: 6px;
+    }
+
     .steam {
       display: inline-block;
       animation: steam 2s ease-in-out infinite;
@@ -517,6 +552,11 @@
       <div class="reason-box" id="resReason">—</div>
     </div>
 
+    <button class="share-btn" id="shareBtn" onclick="shareToX()">
+      <span class="x-logo">𝕏</span> 食べたラーメンをポストする
+    </button>
+    <div class="share-hint">ポストするとトッピング1品無料キャンペーン対象！</div>
+
     <button class="retry-btn" onclick="reset()">↩ もう一度選び直す</button>
   </div>
 
@@ -541,7 +581,7 @@
   const BANNERS = [
     { emoji: '🌅', text: '朝ラーメンやってます！！ 営業時間 7:00〜10:00' },
     { emoji: '🎉', text: '今月限定！チャーシュー増量キャンペーン中' },
-    { emoji: '📱', text: 'インスタ フォロー＆投稿でトッピング1品無料！' },
+    { emoji: '🐦', text: 'X（旧Twitter）フォロー＆投稿でトッピング1品無料！' },
     { emoji: '🅿️', text: '駐車場完備・テイクアウトもOKです' },
   ];
 
@@ -744,6 +784,7 @@
     const best = pickBest(scores);
     const data = ramenDB[best];
 
+    lastRamen = data.name;
     document.getElementById('resRamen').textContent = data.name;
     document.getElementById('resSubtitle').textContent = data.subtitle;
 
@@ -760,6 +801,15 @@
     document.getElementById('resReason').textContent = buildReason(selectedMood, food, best);
     document.getElementById('result').style.display = 'block';
     document.getElementById('result').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  let lastRamen = '';
+
+  function shareToX() {
+    const text = `まし屋IIで「${lastRamen}」を食べました🍜\nめちゃくちゃ美味しかった！！\n\n#まし屋II #米子ラーメン #鳥取グルメ #ラーメン好きと繋がりたい`;
+    const url = 'https://inobasbussy.github.io/ramen-recommend/';
+    const xUrl = `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
+    window.open(xUrl, '_blank');
   }
 
   function reset() {
