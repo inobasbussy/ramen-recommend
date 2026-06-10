@@ -572,7 +572,7 @@
   const STAFF_PICK = {
     ramen: '豚骨ラーメン',
     comment: '今週は特製タレを仕込み直しました！いつもより深みのある一杯に仕上がってます。ぜひ試してみてください。',
-    owner: 'まし屋II 店主より',
+    owner: '笑福 両三柳 ～まし×Ⅱ 店主より',
     // おすすめを出やすくする重み（0〜5、0=通常、5=最優先）
     boost: { tonkotsu: 4, shoyu: 0, shio: 0, miso: 0, spicy: 0, tsukemen: 0, abura: 0, tantanmen: 0 },
   };
@@ -581,7 +581,7 @@
   const BANNERS = [
     { emoji: '🌅', text: '朝ラーメンやってます！！ 営業時間 7:00〜10:00' },
     { emoji: '🎉', text: '今月限定！チャーシュー増量キャンペーン中' },
-    { emoji: '🐦', text: 'X（旧Twitter）フォロー＆投稿でトッピング1品無料！' },
+    { emoji: '🐦', text: 'X フォロー＆「#まし×Ⅱ」投稿でトッピング1品無料！' },
     { emoji: '🅿️', text: '駐車場完備・テイクアウトもOKです' },
   ];
 
@@ -806,7 +806,7 @@
   let lastRamen = '';
 
   function shareToX() {
-    const text = `まし屋IIで「${lastRamen}」を食べました🍜\nめちゃくちゃ美味しかった！！\n\n#まし屋II #米子ラーメン #鳥取グルメ #ラーメン好きと繋がりたい`;
+    const text = `笑福 両三柳 ～まし×Ⅱ～で「${lastRamen}」を食べました🍜\nめちゃくちゃ美味しかった！！\n\n#笑福両三柳 #まし×Ⅱ #米子ラーメン #鳥取グルメ #ラーメン好きと繋がりたい`;
     const url = 'https://inobasbussy.github.io/ramen-recommend/';
     const xUrl = `https://x.com/intent/post?text=${encodeURIComponent(text)}&url=${encodeURIComponent(url)}`;
     window.open(xUrl, '_blank');
