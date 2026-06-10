@@ -4,17 +4,18 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>今日のラーメン、何にする？</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rampart+One&display=swap" rel="stylesheet">
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
 
     body {
       font-family: 'Hiragino Kaku Gothic ProN', 'Noto Sans JP', sans-serif;
-      background-color: #1a0a00;
+      background-color: #f5c800;
       background-image: url('shop.jpg');
       background-size: 220px auto;
       background-repeat: repeat;
       background-attachment: fixed;
-      color: #f5e6d0;
+      color: #8b0000;
       min-height: 100vh;
       display: flex;
       flex-direction: column;
@@ -26,7 +27,7 @@
       content: '';
       position: fixed;
       inset: 0;
-      background: rgba(20, 6, 0, 0.82);
+      background: rgba(245, 200, 0, 0.88);
       z-index: 0;
       pointer-events: none;
     }
@@ -41,7 +42,7 @@
       position: relative;
       z-index: 1;
       width: 100%;
-      background: #c0440a;
+      background: #cc0000;
       overflow: hidden;
     }
 
@@ -56,7 +57,7 @@
       text-align: center;
       font-size: 0.9rem;
       font-weight: bold;
-      color: #fff;
+      color: #fff8cc;
       letter-spacing: 0.05em;
       display: flex;
       align-items: center;
@@ -69,38 +70,41 @@
       justify-content: center;
       gap: 6px;
       padding: 5px 0;
-      background: #a03408;
+      background: #aa0000;
     }
 
     .banner-dot {
       width: 6px;
       height: 6px;
       border-radius: 50%;
-      background: rgba(255,255,255,0.4);
+      background: rgba(255,255,200,0.4);
       transition: background 0.3s;
     }
 
-    .banner-dot.active { background: #fff; }
+    .banner-dot.active { background: #fff8cc; }
 
     /* ===== HEADER ===== */
     header {
       width: 100%;
       padding: 20px 16px 14px;
       text-align: center;
-      background: linear-gradient(180deg, #3d1a00 0%, #1a0a00 100%);
-      border-bottom: 2px solid #c0440a;
+      background: linear-gradient(180deg, #e6b800 0%, #f5c800 100%);
+      border-bottom: 3px solid #cc0000;
     }
 
     header h1 {
-      font-size: 1.6rem;
-      color: #ff9944;
-      letter-spacing: 0.05em;
+      font-size: 2.6rem;
+      font-family: 'Rampart One', sans-serif;
+      color: #cc0000;
+      letter-spacing: 0.1em;
+      line-height: 1.2;
+      text-shadow: 4px 4px 0px #7a0000, 2px 2px 0px #ff4444;
     }
 
     header p {
       margin-top: 6px;
       font-size: 0.85rem;
-      color: #c8a880;
+      color: #8b3000;
     }
 
     /* ===== WEATHER BAR ===== */
@@ -111,12 +115,12 @@
       gap: 10px;
       margin-top: 10px;
       font-size: 0.8rem;
-      color: #d4a870;
+      color: #8b3000;
     }
 
     .weather-bar .weather-icon { font-size: 1.2rem; }
     .weather-bar .weather-hint {
-      color: #ff9944;
+      color: #cc0000;
       font-weight: bold;
     }
 
@@ -131,19 +135,19 @@
     }
 
     .staff-pick-card {
-      background: linear-gradient(135deg, #4a1e00, #2a0a00);
-      border: 2px solid #ff7722;
+      background: #fff8cc;
+      border: 2.5px solid #cc0000;
       border-radius: 16px;
       padding: 16px 18px;
       display: flex;
       gap: 14px;
       align-items: flex-start;
-      box-shadow: 0 0 20px #ff772233;
+      box-shadow: 0 3px 16px #cc000033;
     }
 
     .staff-pick-badge {
-      background: linear-gradient(135deg, #ff7722, #c0440a);
-      color: #fff;
+      background: #cc0000;
+      color: #fff8cc;
       font-size: 0.65rem;
       font-weight: bold;
       letter-spacing: 0.08em;
@@ -158,13 +162,13 @@
     .staff-pick-name {
       font-size: 1.15rem;
       font-weight: bold;
-      color: #ff9944;
+      color: #cc0000;
       margin-bottom: 4px;
     }
 
     .staff-pick-comment {
       font-size: 0.8rem;
-      color: #d4a870;
+      color: #5a1000;
       line-height: 1.6;
     }
 
@@ -172,7 +176,7 @@
       display: block;
       margin-top: 6px;
       font-size: 0.72rem;
-      color: #c0440a;
+      color: #cc0000;
     }
 
     /* ===== CONTAINER ===== */
@@ -187,15 +191,17 @@
     .step-label {
       font-size: 0.72rem;
       letter-spacing: 0.12em;
-      color: #c0440a;
+      color: #cc0000;
       text-transform: uppercase;
       margin-bottom: 8px;
+      font-weight: bold;
     }
 
     .step h2 {
       font-size: 1.05rem;
-      color: #ffd4a0;
+      color: #7a0000;
       margin-bottom: 14px;
+      font-weight: bold;
     }
 
     .mood-grid {
@@ -205,8 +211,8 @@
     }
 
     .mood-btn {
-      background: #2a1000;
-      border: 1.5px solid #5a2800;
+      background: #fff8cc;
+      border: 2px solid #e8a000;
       border-radius: 12px;
       padding: 12px 6px;
       cursor: pointer;
@@ -218,10 +224,10 @@
       gap: 6px;
     }
 
-    .mood-btn:hover { border-color: #ff7722; background: #3a1800; }
-    .mood-btn.selected { border-color: #ff7722; background: #4a2000; box-shadow: 0 0 12px #ff772244; }
+    .mood-btn:hover { border-color: #cc0000; background: #fff0aa; }
+    .mood-btn.selected { border-color: #cc0000; background: #ffe066; box-shadow: 0 0 12px #cc000033; }
     .mood-btn .emoji { font-size: 1.8rem; }
-    .mood-btn .label { font-size: 0.8rem; color: #d4a870; line-height: 1.2; }
+    .mood-btn .label { font-size: 0.8rem; color: #8b0000; line-height: 1.2; }
 
     .yesterday-grid {
       display: grid;
@@ -231,93 +237,94 @@
     }
 
     .yesterday-btn {
-      background: #2a1000;
-      border: 1.5px solid #5a2800;
+      background: #fff8cc;
+      border: 2px solid #e8a000;
       border-radius: 10px;
       padding: 10px 8px;
       cursor: pointer;
       font-size: 0.82rem;
-      color: #d4a870;
+      color: #8b0000;
       text-align: center;
       transition: all 0.15s;
     }
 
-    .yesterday-btn:hover { border-color: #ff7722; background: #3a1800; }
-    .yesterday-btn.selected { border-color: #ff7722; background: #4a2000; }
+    .yesterday-btn:hover { border-color: #cc0000; background: #fff0aa; }
+    .yesterday-btn.selected { border-color: #cc0000; background: #ffe066; }
 
     .or-divider {
       text-align: center;
       font-size: 0.72rem;
-      color: #806040;
+      color: #a06020;
       margin: 10px 0;
     }
 
     input[type="text"] {
       width: 100%;
-      background: #2a1000;
-      border: 1.5px solid #5a2800;
+      background: #fff8cc;
+      border: 2px solid #e8a000;
       border-radius: 10px;
       padding: 12px 14px;
-      color: #f5e6d0;
+      color: #8b0000;
       font-size: 0.9rem;
       outline: none;
       transition: border-color 0.15s;
     }
 
-    input[type="text"]:focus { border-color: #ff7722; }
-    input[type="text"]::placeholder { color: #6a4830; }
+    input[type="text"]:focus { border-color: #cc0000; }
+    input[type="text"]::placeholder { color: #c8a060; }
 
     .amount-row { display: flex; gap: 10px; }
 
     .amount-btn {
       flex: 1;
-      background: #2a1000;
-      border: 1.5px solid #5a2800;
+      background: #fff8cc;
+      border: 2px solid #e8a000;
       border-radius: 10px;
       padding: 11px 6px;
       cursor: pointer;
       text-align: center;
       font-size: 0.82rem;
-      color: #d4a870;
+      color: #8b0000;
       transition: all 0.15s;
     }
 
-    .amount-btn:hover { border-color: #ff7722; background: #3a1800; }
-    .amount-btn.selected { border-color: #ff7722; background: #4a2000; }
+    .amount-btn:hover { border-color: #cc0000; background: #fff0aa; }
+    .amount-btn.selected { border-color: #cc0000; background: #ffe066; }
 
     .cta-btn {
       width: 100%;
       padding: 16px;
-      background: linear-gradient(135deg, #c0440a, #ff7722);
+      background: #cc0000;
       border: none;
       border-radius: 14px;
-      color: #fff;
+      color: #fff8cc;
       font-size: 1.05rem;
       font-weight: bold;
       cursor: pointer;
       letter-spacing: 0.08em;
       transition: opacity 0.15s, transform 0.1s;
       margin-top: 8px;
+      font-family: 'Rampart One', sans-serif;
     }
 
-    .cta-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+    .cta-btn:hover { opacity: 0.88; transform: translateY(-1px); }
     .cta-btn:active { transform: translateY(0); }
     .cta-btn:disabled { opacity: 0.35; cursor: not-allowed; transform: none; }
 
     #result { display: none; margin-top: 32px; }
 
     .result-card {
-      background: linear-gradient(160deg, #3a1a00, #2a0e00);
-      border: 2px solid #c0440a;
+      background: #fff8cc;
+      border: 2.5px solid #cc0000;
       border-radius: 18px;
       padding: 24px 20px;
-      box-shadow: 0 4px 32px #c0440a33;
+      box-shadow: 0 4px 24px #cc000033;
     }
 
     .result-card .tag {
       display: inline-block;
-      background: #c0440a;
-      color: #fff;
+      background: #cc0000;
+      color: #fff8cc;
       font-size: 0.68rem;
       font-weight: bold;
       letter-spacing: 0.1em;
@@ -326,49 +333,51 @@
       margin-bottom: 12px;
     }
 
-    .result-card h3 { font-size: 1.6rem; color: #ff9944; margin-bottom: 4px; }
-    .result-card .subtitle { font-size: 0.82rem; color: #c8a070; margin-bottom: 20px; }
+    .result-card h3 { font-size: 1.6rem; color: #cc0000; margin-bottom: 4px; font-family: 'Rampart One', sans-serif; }
+    .result-card .subtitle { font-size: 0.82rem; color: #8b3000; margin-bottom: 20px; }
     .result-section { margin-bottom: 16px; }
 
     .result-section .section-title {
       font-size: 0.72rem;
-      color: #c0440a;
+      color: #cc0000;
       letter-spacing: 0.1em;
       text-transform: uppercase;
       margin-bottom: 6px;
+      font-weight: bold;
     }
 
     .topping-list { display: flex; flex-wrap: wrap; gap: 6px; }
 
     .topping-chip {
-      background: #4a1e00;
-      border: 1px solid #7a3010;
+      background: #ffe066;
+      border: 1.5px solid #e8a000;
       border-radius: 20px;
       padding: 4px 12px;
       font-size: 0.82rem;
-      color: #ffd4a0;
+      color: #8b0000;
     }
 
-    .topping-chip.highlight { background: #7a2800; border-color: #ff7722; color: #ff9944; }
+    .topping-chip.highlight { background: #cc0000; border-color: #aa0000; color: #fff8cc; }
 
     .amount-badge {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      background: #4a1e00;
-      border: 1px solid #7a3010;
+      background: #ffe066;
+      border: 1.5px solid #e8a000;
       border-radius: 20px;
       padding: 4px 14px;
       font-size: 0.85rem;
-      color: #ffd4a0;
+      color: #8b0000;
     }
 
     .reason-box {
-      background: #1e0c00;
+      background: #fff0aa;
+      border: 1.5px solid #e8a000;
       border-radius: 10px;
       padding: 12px 14px;
       font-size: 0.82rem;
-      color: #c8a070;
+      color: #5a1000;
       line-height: 1.65;
       margin-top: 16px;
       white-space: pre-line;
@@ -379,15 +388,15 @@
       margin-top: 18px;
       padding: 12px;
       background: transparent;
-      border: 1.5px solid #5a2800;
+      border: 2px solid #cc0000;
       border-radius: 12px;
-      color: #c8a070;
+      color: #cc0000;
       font-size: 0.85rem;
       cursor: pointer;
-      transition: border-color 0.15s, color 0.15s;
+      transition: border-color 0.15s, background 0.15s;
     }
 
-    .retry-btn:hover { border-color: #ff7722; color: #ffd4a0; }
+    .retry-btn:hover { background: #fff0aa; border-color: #aa0000; }
 
     .steam {
       display: inline-block;
